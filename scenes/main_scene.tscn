@@ -1,0 +1,111 @@
+[gd_scene load_steps=11 format=3 uid="uid://dhusi0einp0ct"]
+
+[ext_resource type="PackedScene" uid="uid://014l8vlwjsbm" path="res://scenes/bird.tscn" id="1_mcydx"]
+[ext_resource type="Texture2D" uid="uid://kni52dhhruow" path="res://assets/background-day.png" id="1_u23ac"]
+[ext_resource type="Script" path="res://scenes/main_scene.gd" id="1_wibes"]
+[ext_resource type="PackedScene" uid="uid://b2wly7sjhyy3m" path="res://scenes/floor.tscn" id="4_q338x"]
+[ext_resource type="FontFile" uid="uid://crmukywdnvmkd" path="res://assets/Kenney Blocks.ttf" id="5_tme1t"]
+[ext_resource type="Texture2D" uid="uid://dmurqvxmllyq5" path="res://assets/taptap.png" id="6_eys8r"]
+[ext_resource type="Texture2D" uid="uid://tji37glllq5b" path="res://assets/gameover.png" id="7_hwqxn"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v1xyd"]
+size = Vector2(305, 531)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_suvwf"]
+size = Vector2(20, 423)
+
+[sub_resource type="LabelSettings" id="LabelSettings_ggcc8"]
+font = ExtResource("5_tme1t")
+font_size = 25
+font_color = Color(0, 0, 0, 1)
+outline_size = 13
+
+[node name="MainScene" type="Node2D"]
+script = ExtResource("1_wibes")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_u23ac")
+
+[node name="Bird" parent="." instance=ExtResource("1_mcydx")]
+z_index = 1
+position = Vector2(100, 255)
+
+[node name="touchArea" type="Area2D" parent="."]
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="touchArea"]
+position = Vector2(142.5, 255.5)
+shape = SubResource("RectangleShape2D_v1xyd")
+
+[node name="removePipes" type="Area2D" parent="."]
+position = Vector2(-67, 31)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="removePipes"]
+position = Vector2(25, 181)
+shape = SubResource("RectangleShape2D_suvwf")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(143, 257)
+
+[node name="floor" parent="." instance=ExtResource("4_q338x")]
+z_index = 1
+position = Vector2(144, 457)
+
+[node name="MenuLayer" type="CanvasLayer" parent="."]
+
+[node name="Button" type="Button" parent="MenuLayer"]
+visible = false
+offset_left = 106.0
+offset_top = 434.0
+offset_right = 167.0
+offset_bottom = 465.0
+text = "Restart"
+
+[node name="Label" type="Label" parent="MenuLayer"]
+offset_left = 132.0
+offset_top = 43.0
+offset_right = 151.0
+offset_bottom = 85.0
+text = "0
+"
+label_settings = SubResource("LabelSettings_ggcc8")
+
+[node name="readyTxt" type="TextureRect" parent="MenuLayer"]
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 53.0
+offset_top = -125.0
+offset_right = -62.0
+offset_bottom = 17.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("6_eys8r")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="gameOver" type="TextureRect" parent="MenuLayer"]
+visible = false
+offset_left = 42.0
+offset_top = 98.0
+offset_right = 234.0
+offset_bottom = 140.0
+texture = ExtResource("7_hwqxn")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[connection signal="input_event" from="touchArea" to="." method="_on_area_2d_input_event"]
+[connection signal="area_entered" from="removePipes" to="." method="_on_remove_pipes_area_entered"]
+[connection signal="pressed" from="MenuLayer/Button" to="." method="_on_button_pressed"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
